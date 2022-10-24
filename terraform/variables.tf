@@ -18,10 +18,10 @@ variable "ubuntu_22_04" {
   # standard img https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img
 }
 
-variable "vm_hostname" {
-  description = "vm hostname, known as domain in kvm"
-  default     = "ranode"
-}
+# variable "vm_hostname" {
+#   description = "vm hostname, known as domain in kvm"
+#   default     = "ranode"
+# }
 
 variable "ssh_username" {
   description = "the ssh user to use"

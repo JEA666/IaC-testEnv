@@ -1,7 +1,7 @@
 # Create a storage for Terraform state. 
+# Need full path in path, cant use variables
 terraform {
   backend "local" {
-    path = "backend_path"
-    #"/home/jea/tmp/tfstate/terraform.tfstate"
+    path = "/opt/tmp/tfstate/terraform.tfstate"
   }
 }

@@ -2,13 +2,13 @@
 resource "libvirt_pool" "tf_ubuntu" {
   name = "tf_ubuntu"
   type = "dir"
-  path = "libvirt_disk_path"
+  path = var.libvirt_disk_path
 }
 
 resource "libvirt_volume" "ubuntu-qcow2" {
   name = "ubuntu-qcow2"
   pool = libvirt_pool.tf_ubuntu.name
-  source = "ubuntu_20_04"
+  source = var.ubuntu_22_04
   format = "qcow2"
 }
 
@@ -29,7 +29,7 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 }
 
 resource "libvirt_domain" "domain-ubuntu" {
-  name   = "vm_hostname${count.index}"
+  name   = "ranchernode${count.index}"
   memory = "1024"
   vcpu   = 2
   count = 1
