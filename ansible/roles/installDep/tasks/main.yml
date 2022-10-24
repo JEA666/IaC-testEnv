@@ -1,0 +1,25 @@
+---
+
+- name: Install dependencies
+  block:
+
+    - name: Install KVM/Qemu and Libvirt
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: True
+      vars:
+        packages:
+        - qemu-kvm 
+        - libvirt-daemon 
+        - bridge-utils 
+        - virtinst 
+        - libvirt-daemon-system 
+        - virt-top 
+        - libguestfs-tools 
+        - libosinfo-bin  
+        - qemu-system 
+        - virt-manager
+
+  become: True
+  become_user: root
