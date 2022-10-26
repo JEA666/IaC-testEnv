@@ -17,3 +17,5 @@ TODO
 
     Install latest Terraform Snap/Ansible ?
     Change folder ownership for terraform statfile
+    IP routing, host to vm
+    Define disk seize
