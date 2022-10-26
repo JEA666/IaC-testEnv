@@ -11,3 +11,9 @@ You need to generate a file called terraform.tfvars, and add your information.
 Ther is a bug with libvirt, what works for me is to edit /etc/libvirt/qemu.conf
 
     security_driver = [ "none" ]
+
+
+TODO
+
+    Install latest Terraform Snap/Ansible ?
+    Change folder ownership for terraform statfile
