@@ -6,3 +6,8 @@ You need to generate a file called terraform.tfvars, and add your information.
     # Username and credentials
     ssh_username = "som user name" # for demo it is ubuntu
     ssh_private_key =  "path for your key"
+
+
+Ther is a bug with libvirt, what works for me is to edit /etc/libvirt/qemu.conf
+
+    security_driver = [ "none" ]
