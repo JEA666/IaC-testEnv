@@ -1,14 +1,19 @@
 # hmm what is a good comment for a file of variables ?
 
-variable "backend_path" {
-    description = "value"
-    default = "/home/jea/tmp/tfstate/terraform.tfstate"
+# Name and number of virtual machines (domain)
+variable "domain_name" {
+  description = "Name of domain(VM's)"
+  default = "rcnode"
+}
+variable "domain_count" {
+  description = "Number of domains(VM's)"
+  default = "3"
   
 }
 
 variable "libvirt_disk_path" {
   description = "path for libvirt pool"
-  default     = "/var/lib/libvirt/images/tf-pool01"
+  default     = "/var/lib/libvirt/images/tf-ubuntu"
 }
 
 variable "ubuntu_22_04" {

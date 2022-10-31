@@ -6,12 +6,20 @@ resource "libvirt_pool" "tf_ubuntu" {
 }
 
 resource "libvirt_volume" "ubuntu-qcow2" {
-  name = "ubuntu-qcow2"
+  count = var.domain_count
+  name = "ubuntu${count.index}.qcow2"
   pool = libvirt_pool.tf_ubuntu.name
   source = var.ubuntu_22_04
   format = "qcow2"
 }
 
+resource "libvirt_cloudinit_disk" "commoninit" {
+  count          = var.domain_count
+  name           = "commoninit${count.index}.iso"
+  user_data      = data.template_file.user_data.rendered
+  network_config = data.template_file.network_config.rendered
+  pool           = libvirt_pool.tf_ubuntu.name
+}
 # Need to read more, could libcirt_poop and libvirt_volume be global values?
 data "template_file" "user_data" {
   template = file("${path.module}/config/cloud_init.cfg")
@@ -21,20 +29,14 @@ data "template_file" "network_config" {
   template = file("${path.module}/config/network.cfg")
 }
 
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name           = "commoninit.iso"
-  user_data      = data.template_file.user_data.rendered
-  network_config = data.template_file.network_config.rendered
-  pool           = libvirt_pool.tf_ubuntu.name
-}
 
 resource "libvirt_domain" "domain-ubuntu" {
-  name   = "ranchernode${count.index}"
+  count  = var.domain_count
+  name   = "var.domain_name${count.index}"
   memory = "1024"
   vcpu   = 2
-  count = 1
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.commoninit[count.index].id
 
   network_interface {
     network_name = "default"
@@ -53,7 +55,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   disk {
-    volume_id = libvirt_volume.ubuntu-qcow2.id
+    volume_id = libvirt_volume.ubuntu-qcow2[count.index].id
   }
 
   graphics {
