@@ -3,7 +3,7 @@
 # Name and number of virtual machines (domain)
 variable "domain_name" {
   description = "Name of domain(VM's)"
-  default = "rcnode"
+  default = "rccattel"
 }
 variable "domain_count" {
   description = "Number of domains(VM's)"
