@@ -42,7 +42,7 @@ data "template_file" "network_config" {
 # Deploy Rancher cattles
 resource "libvirt_domain" "domain-ubuntu" {
   count  = var.domain_count
-  name   = "var.domain_name${count.index}"
+  name   = "${var.domain_name}-${count.index}"
   memory = "1024"
   vcpu   = 2
 
