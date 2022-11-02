@@ -20,7 +20,7 @@ resource "libvirt_volume" "disk_ubuntu_resized" {
   base_volume_id = libvirt_volume.os_image_ubuntu[count.index].id
 #  base_volume_id = libvirt_volume.os_image_ubuntu.id 
   pool           = libvirt_pool.tf_ubuntu.name
-  size           = 5361393152
+  size           = 8361393152
 }
 
 # Rancher Cattle config
@@ -43,7 +43,7 @@ data "template_file" "network_config" {
 resource "libvirt_domain" "domain-ubuntu" {
   count  = var.domain_count
   name   = "${var.domain_name}-${count.index}"
-  memory = "1024"
+  memory = "4096"
   vcpu   = 2
 
   cloudinit = libvirt_cloudinit_disk.ubuntu_[count.index].id

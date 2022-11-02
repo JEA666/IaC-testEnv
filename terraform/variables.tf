@@ -7,7 +7,7 @@ variable "domain_name" {
 }
 variable "domain_count" {
   description = "Number of domains(VM's)"
-  default = "3"
+  default = "1"
   
 }
 
