@@ -13,7 +13,7 @@ variable "domain_count" {
 
 variable "libvirt_disk_path" {
   description = "path for libvirt pool"
-  default     = "/var/lib/libvirt/images/tf-ubuntu"
+  default     = "/home/spk.no/jea/git/projects/IaC-testEnv/terraform/config/.state/images/"
 }
 
 variable "ubuntu_22_04" {

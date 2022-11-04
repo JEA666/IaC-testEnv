@@ -3,6 +3,7 @@
 **/.vscode/
 **/.terraform.d/
 **/.terraform/
+**/.state/
 
 # Ignored files
 *.retry
