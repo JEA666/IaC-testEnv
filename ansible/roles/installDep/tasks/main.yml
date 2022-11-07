@@ -20,6 +20,7 @@
         - libosinfo-bin  
         - qemu-system 
         - virt-manager
+        - genisoimage
 
   become: True
   become_user: root
