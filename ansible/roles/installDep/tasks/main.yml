@@ -84,12 +84,13 @@
 # Restart services
     - name: Start docker
       service:
-        name: "{{ service }}"
-        state: restart
-      vars:
-        service:
-          - docker
-          - libvirt 
+        name: docker
+        state: restarted
+
+    - name: Start docker
+      service:
+        name: libvirt 
+        state: restarted
 
   become: True
   become_user: root
