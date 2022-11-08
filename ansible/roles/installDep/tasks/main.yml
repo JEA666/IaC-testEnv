@@ -79,7 +79,7 @@
         classic: yes
       vars:
         packages:
-          - terraform
+        - terraform
 
 # Restart services
     - name: Restart docker
