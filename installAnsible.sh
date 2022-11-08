@@ -9,6 +9,6 @@ else
 fi
 
 # Start Ansible script
-#printf "\e[1;32m%-6s\e[m\n" "Starting Ansible script .."
-#ansible-playbook ansible/localHostProvisioning.yml --ask-become-pass
+printf "\e[1;32m%-6s\e[m\n" "Starting Ansible script .."
+ansible-playbook ansible/localHostProvisioning.yml --ask-become-pass
 
