@@ -75,7 +75,7 @@ resource "libvirt_domain" "domain-ubuntu" {
     autoport    = true
   }
 }
-# End of cattel config
+# End of cattle config
 
 terraform {
     required_version = ">= 1.3.3"

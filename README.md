@@ -55,7 +55,7 @@ Rancher command center!
 
 Connect VM to rancher
 
-    # Find vm ip
+    # Find VM ip
     virsh net-dhcp-leases default
 
 ssh username and password is ubuntu
