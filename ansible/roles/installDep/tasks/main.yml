@@ -82,14 +82,14 @@
           - terraform
 
 # Restart services
-    - name: Start docker
+    - name: Restart docker
       service:
         name: docker
         state: restarted
 
-    - name: Start docker
+    - name: Restart libvirtd
       service:
-        name: libvirt 
+        name: libvirtd  
         state: restarted
 
   become: True
