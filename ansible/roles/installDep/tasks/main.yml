@@ -58,8 +58,11 @@
 
     - name: Install Terraform, snap --classic
       snap:
-        name: "{{ snapDevTools }}"
+        name: "{{ packages }}"
         classic: yes
+      vars:
+        packages:
+          - terraform
 
   become: True
   become_user: root
