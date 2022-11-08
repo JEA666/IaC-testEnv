@@ -3,6 +3,7 @@
 - name: Install dependencies
   block:
 
+# Docker and friends
     - name: Install packages that allow apt to be used over HTTPS
       apt:
         name: "{{ packages }}"
@@ -37,6 +38,7 @@
         - docker-ce-cli 
         - containerd.io
 
+# KVM hypervisor and friends
     - name: Install KVM/Qemu and Libvirt
       apt:
         name: "{{ packages }}"
@@ -56,6 +58,13 @@
         - virt-manager
         - genisoimage
 
+    - name: create images folder for libvirt 
+      file:
+        path: ~/.iactestenv/images
+        state: directory
+        owner: "{{ user }}" 
+
+# Terraform
     - name: Install Terraform, snap --classic
       snap:
         name: "{{ packages }}"
