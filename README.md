@@ -16,6 +16,8 @@ You need to generate a file called terraform.tfvars, and add your information.
     ssh_username = "som user name" # for demo it is ubuntu
     ssh_private_key =  "path for your key"
 
+You also need to edit variables.tf for variables from your environment.
+
 ## Step 3
 
 Reboot PC
