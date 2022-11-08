@@ -4,24 +4,11 @@ Local test environment for KVM, Libvirt, Ansible, Terraform and Rancher
 
 ## Step 1
 
-Install ansible
+Install ansible and KVM
 
     ./bootstrap
 
 ## Step 2
-
-Install KVM
-
-    cd ansible
-    ansible-playbook localHostProvisioning.yml --ask-become-pass
-
-## Step 3 
-
-Install Terraform
-
-    snap install terraform --classic
-
-## Step 4
 
 You need to generate a file called terraform.tfvars, and add your information.
 
@@ -29,19 +16,11 @@ You need to generate a file called terraform.tfvars, and add your information.
     ssh_username = "som user name" # for demo it is ubuntu
     ssh_private_key =  "path for your key"
 
-## Step 5
-
-I had some problems with the network setup, my solution was to change the bridge for docker to KVM bridge.
-Edit /etc/docker/daemon.json
-
-    {
-    "bridge": "virbr0",
-    "iptables": false    
-    }
+## Step 3
 
 Reboot PC
 
-## Step 6
+## Step 4
 
 DOESN'T WORK WITH ROOTLESS DOCKER
 
@@ -50,8 +29,7 @@ Rancher command center!
     docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged --name=rancher rancher/rancher:latest
     docker logs rancher 2>&1 | grep "Bootstrap Password:"
 
-
-## Step 7
+## Step 5
 
 Connect VM to rancher
 
@@ -60,9 +38,9 @@ Connect VM to rancher
 
 ssh username and password is ubuntu
 
-## Step 8
+## Step 6
 
-Run terraform 
+Run terraform
 
 cd to terraform directory
 
@@ -73,17 +51,3 @@ cd to terraform directory
 To destroy your environment
 
     terraform destroy
-
-## Troubleshooting
-
-There is a bug with libvirt, what worked for me was to edit /etc/libvirt/qemu.conf
-
-    security_driver = [ "none" ]
-
-
-## Future
-
-TODO
-
-    Install latest Terraform Snap/Ansible ?
-    Change folder ownership for terraform statfile
