@@ -13,7 +13,7 @@ variable "domain_count" {
 # Disk and image resources
 variable "libvirt_disk_path" {
   description = "path for libvirt pool"
-  default     = "config/.state/images/"
+  default     = "/home/jea/git/privat/IaC-testEnv/terraform/config/.state/images/"
 }
 
 variable "ubuntu_22_04" {
