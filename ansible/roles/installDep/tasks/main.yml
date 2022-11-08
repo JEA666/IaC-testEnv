@@ -38,6 +38,13 @@
         - docker-ce-cli 
         - containerd.io
 
+    - name: Jinja2 template for docker-daemon
+      template:
+        src:   ../template/daemon.json.j2
+        dest:  /etc/docker/daemon.json
+        owner: root
+        group: root
+
 # KVM hypervisor and friends
     - name: Install KVM/Qemu and Libvirt
       apt:
@@ -60,7 +67,7 @@
 
     - name: Jinja2 template for libvirt-daemon
       template:
-        src:   qemu.conf.j2
+        src:   ../template/qemu.conf.j2
         dest:  /etc/libvirt/qemu.conf
         owner: root
         group: root
@@ -73,6 +80,16 @@
       vars:
         packages:
           - terraform
+
+# Restart services
+    - name: Start docker
+      service:
+        name: "{{ service }}"
+        state: restart
+      vars:
+        service:
+          - docker
+          - libvirt 
 
   become: True
   become_user: root
