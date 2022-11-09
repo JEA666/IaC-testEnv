@@ -21,11 +21,9 @@ resource "libvirt_volume" "nodes" {
   count          = var.node_count
 }
 
-# Rancher Cattle config
-resource "libvirt_cloudinit_disk" "ubuntu_" {
-#  count          = var.node_count
-#  name           = "ubuntu_${count.index}.iso"
-  name           = "ubuntu_.iso"
+# Cloud init config
+resource "libvirt_cloudinit_disk" "ubuntu" {
+  name           = "ubuntu-22_04.iso"
   user_data      = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
   pool           = libvirt_pool.tf_ubuntu.name
@@ -45,7 +43,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   memory = "8192"
   vcpu   = 4
 
-  cloudinit = libvirt_cloudinit_disk.ubuntu_.id
+  cloudinit = libvirt_cloudinit_disk.ubuntu.id
 
   network_interface {
     network_name = "default"
