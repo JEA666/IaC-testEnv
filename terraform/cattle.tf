@@ -9,6 +9,7 @@ resource "libvirt_pool" "tf_ubuntu" {
 resource "libvirt_volume" "ubuntu-22_04" {
   name   = "ubuntu-22_04"
   source = var.ubuntu_22_04
+  pool   = libvirt_pool.tf_ubuntu.name
 }
 
 # volume to attach to the "nodes" domain as main disk
@@ -22,8 +23,9 @@ resource "libvirt_volume" "nodes" {
 
 # Rancher Cattle config
 resource "libvirt_cloudinit_disk" "ubuntu_" {
-  count          = var.node_count
-  name           = "ubuntu_${count.index}.iso"
+#  count          = var.node_count
+#  name           = "ubuntu_${count.index}.iso"
+  name           = "ubuntu_.iso"
   user_data      = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
   pool           = libvirt_pool.tf_ubuntu.name
@@ -43,7 +45,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   memory = "8192"
   vcpu   = 4
 
-  cloudinit = libvirt_cloudinit_disk.ubuntu_[count.index].id
+  cloudinit = libvirt_cloudinit_disk.ubuntu_.id
 
   network_interface {
     network_name = "default"
@@ -63,7 +65,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   disk {
-    volume_id = libvirt_volume.nodes_[count.index].qcow2.id
+    volume_id = libvirt_volume.nodes[count.index].id
   }
 
   graphics {

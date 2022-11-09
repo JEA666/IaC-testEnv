@@ -4,7 +4,7 @@ variable "node_name" {
   description = "Name of domain(VM's)"
   default = "rccattle"
 }
-variable "mode_count" {
+variable "node_count" {
   description = "Number of domains(VM's)"
   default = "1"
   
