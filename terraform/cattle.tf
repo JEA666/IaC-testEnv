@@ -44,7 +44,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   count  = var.domain_count
   name   = "${var.domain_name}-${count.index}"
   memory = "8192"
-  vcpu   = 2
+  vcpu   = 4
 
   cloudinit = libvirt_cloudinit_disk.ubuntu_[count.index].id
 
