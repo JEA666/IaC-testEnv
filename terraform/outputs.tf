@@ -1,3 +1,6 @@
 # output "ip" {
-#   value = libvirt_domain.domain-ubuntu.*.network_interface.0.addresses
+#   value = {
+#     for addresses in libvirt_domanin.domain-ubuntu:
+#     network_interface.addresses => addresses.ipv4_address
+#   }
 # }
