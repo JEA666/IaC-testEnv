@@ -4,9 +4,9 @@ Local test environment for KVM, Libvirt, Ansible, Terraform and Rancher
 
 ## Step 1
 
-Install ansible and KVM
+Install Ansible and KVM
 
-    ./bootstrap
+    ./bootstrap.sh
 
 ## Step 2
 

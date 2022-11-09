@@ -43,7 +43,7 @@ data "template_file" "network_config" {
 resource "libvirt_domain" "domain-ubuntu" {
   count  = var.domain_count
   name   = "${var.domain_name}-${count.index}"
-  memory = "4096"
+  memory = "8192"
   vcpu   = 2
 
   cloudinit = libvirt_cloudinit_disk.ubuntu_[count.index].id
