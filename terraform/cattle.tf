@@ -5,27 +5,24 @@ resource "libvirt_pool" "tf_ubuntu" {
   path = var.libvirt_disk_path
 }
 
-resource "libvirt_volume" "os_image_ubuntu" {
-  count  = var.domain_count
-  name   = "os_image_ubuntu-${count.index}"
-#  name   = "os_image_ubuntu"
-  pool   = libvirt_pool.tf_ubuntu.name
+# Base OS image to use to create a cluster of different nodes
+resource "libvirt_volume" "ubuntu-22_04" {
+  name   = "ubuntu-22_04"
   source = var.ubuntu_22_04
 }
 
-resource "libvirt_volume" "disk_ubuntu_resized" {
-  count          = var.domain_count 
-  name           = "disk-${count.index}"
-#  name           = "disk"
-  base_volume_id = libvirt_volume.os_image_ubuntu[count.index].id
-#  base_volume_id = libvirt_volume.os_image_ubuntu.id 
+# volume to attach to the "nodes" domain as main disk
+resource "libvirt_volume" "nodes" {
+  name           = "nodes_${count.index}.qcow2"
+  base_volume_id = libvirt_volume.ubuntu-22_04.id
   pool           = libvirt_pool.tf_ubuntu.name
   size           = 8361393152
+  count          = var.node_count
 }
 
 # Rancher Cattle config
 resource "libvirt_cloudinit_disk" "ubuntu_" {
-  count          = var.domain_count
+  count          = var.node_count
   name           = "ubuntu_${count.index}.iso"
   user_data      = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
@@ -41,8 +38,8 @@ data "template_file" "network_config" {
 
 # Deploy Rancher cattles
 resource "libvirt_domain" "domain-ubuntu" {
-  count  = var.domain_count
-  name   = "${var.domain_name}-${count.index}"
+  count  = var.node_count
+  name   = "${var.node_name}-${count.index}"
   memory = "8192"
   vcpu   = 4
 
@@ -66,7 +63,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   disk {
-    volume_id = libvirt_volume.disk_ubuntu_resized[count.index].id
+    volume_id = libvirt_volume.nodes_[count.index].qcow2.id
   }
 
   graphics {

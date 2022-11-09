@@ -1,10 +1,10 @@
 # hmm what is a good comment for a file of variables ?
 # Name and number of virtual machines (domain)
-variable "domain_name" {
+variable "node_name" {
   description = "Name of domain(VM's)"
   default = "rccattle"
 }
-variable "domain_count" {
+variable "mode_count" {
   description = "Number of domains(VM's)"
   default = "1"
   
@@ -13,7 +13,7 @@ variable "domain_count" {
 # Disk and image resources
 variable "libvirt_disk_path" {
   description = "path for libvirt pool"
-  default     = "/home/jea/git/privat/IaC-testEnv/terraform/config/.state/images"
+  default     = "/var/lib/libvirt/images/iactestenv"
 }
 
 variable "ubuntu_22_04" {
