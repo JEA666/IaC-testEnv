@@ -81,16 +81,6 @@
         packages:
         - terraform
 
-# Restart services
-    - name: Restart docker
-      service:
-        name: docker
-        state: restarted
-
-    - name: Restart libvirtd
-      service:
-        name: libvirtd  
-        state: restarted
 
   become: True
   become_user: root
