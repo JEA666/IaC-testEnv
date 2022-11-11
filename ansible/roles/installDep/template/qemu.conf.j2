@@ -5,8 +5,11 @@
 
 security_driver = [ "none" ]
 
-user = "root"
-group = "root"
+#user = "root"
+#group = "root"
+
+user  = "{{ uid }}"
+group = "{{ guid }}"
 
 swtpm_user = "swtpm"
 swtpm_group = "swtpm"

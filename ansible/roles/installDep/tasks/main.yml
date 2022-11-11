@@ -3,6 +3,10 @@
 - name: Install dependencies
   block:
 
+    - vars:
+        user: "{{ lookup('vars', 'uid') }}"
+        group: "{{ lookup('vars', 'gui') }}"
+
 # Docker and friends
     - name: Install packages that allow apt to be used over HTTPS
       apt:
@@ -80,7 +84,6 @@
       vars:
         packages:
         - terraform
-
 
   become: True
   become_user: root
