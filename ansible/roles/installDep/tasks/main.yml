@@ -3,10 +3,6 @@
 - name: Install dependencies
   block:
 
-    - vars:
-        user: "{{ lookup('vars', 'uid') }}"
-        group: "{{ lookup('vars', 'gui') }}"
-
 # Docker and friends
     - name: Install packages that allow apt to be used over HTTPS
       apt:
@@ -74,7 +70,7 @@
         src:   ../template/qemu.conf.j2
         dest:  /etc/libvirt/qemu.conf
         owner: root
-        group: root
+        group: root 
 
 # Terraform
     - name: Install Terraform, snap --classic
