@@ -33,15 +33,6 @@ Rancher command center!
 
 ## Step 5
 
-Connect VM to rancher
-
-    # Find VM ip
-    virsh net-dhcp-leases default
-
-ssh username and password is ubuntu
-
-## Step 6
-
 Run terraform
 
 cd to terraform directory
@@ -49,6 +40,17 @@ cd to terraform directory
     terraform init
     terraform plan
     terraform apply
+   
+## Step 6
+
+Connect VM to rancher
+
+    # Find VM ip
+    virsh net-dhcp-leases default
+
+ssh username and password is ubuntu
+
+## Step 7
 
 To destroy your environment
 
