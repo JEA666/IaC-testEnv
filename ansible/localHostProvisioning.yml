@@ -7,5 +7,5 @@
   ignore_errors: True
 
   roles:
-    - installDep
-    - restartServices
+    - base_env/roles/installDep
+    - base_env/roles/restartServices

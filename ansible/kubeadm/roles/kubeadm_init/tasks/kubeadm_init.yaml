@@ -1,0 +1,263 @@
+- name: Play01 - Provision and install Docker and Kubernetes
+  hosts: all
+  vars_files:
+    group_vars/all
+  remote_user: "$USER"
+  gather_facts: yes
+  become: yes
+  become_user: root
+  
+  tasks:
+  # Rolle config-apt
+  - name: Configure APT to use https
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+  - name: Add an apt signing key for Docker and Kubernetes
+    apt_key:
+      url: "{{ fqfn }}"
+      state: present
+    vars:
+      fqfn:
+      - https://download.docker.com/linux/ubuntu/gpg
+      - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+  - name: Add apt repository for stable version
+    apt_repository:
+      repo: "{{ repoList }}"
+      state: present
+    vars:
+      repoList:
+      - "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+      - "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+  # - name: Add an apt signing key for Kubernetes
+  #   apt_key:
+  #     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  #     state: present
+
+  - name: Adding apt repository for Kubernetes
+    apt_repository:
+      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: kubernetes.list
+
+  # Rolle add-docker
+  - name: Install docker and its dependecies
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - docker-ce 
+      - docker-ce-cli 
+      - containerd.io
+
+    notify:
+      - docker status
+
+  # Rolle add-users-docker
+  - name: check if user is created
+    shell: cat /etc/passwd | grep vagrant
+    register: create_user
+    ignore_errors: true
+
+  - name: Add users to docker groupe
+    user:
+      name: "{{ item }}"
+      groups: docker
+      append: true
+    loop:
+      # Make this a global variable
+      - vagrant
+    when: create_user.rc !=0
+
+  # Rolle remove-swap
+  - name: Remove swapfile from /etc/fstab
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    loop:
+      - swap
+      - none
+
+  - name: Disable swap
+    command: swapoff -a
+    when: ansible_swaptotal_mb > 0
+
+  # Rolle add-kubernetes
+  - name: check if kubeadm is startetd
+    shell: which kubelet
+    register: bin_installed
+    ignore_errors: true
+
+  - name: Install Kubernetes binaries
+    apt: 
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    loop:
+        - kubelet 
+        - kubeadm 
+        - kubectl 
+    when: bin_installed !=0
+
+  - name: Add config file
+    file:
+      path: /etc/default/kubelet
+      state: touch       
+  
+  - name: Configure node ip
+    lineinfile:
+      path: /etc/default/kubelet
+      line: KUBELET_EXTRA_ARGS=--node-ip={{ ansible_facts.eth1.ipv4.address }}
+
+  - name: Restart kubelet
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+
+  handlers:
+  - name: docker status
+    service: name=docker state=started
+
+# **************************************
+- name: Play02 - Init Kubernetes and add users
+  hosts: bootstrap
+  vars_files:
+    group_vars/all
+  remote_user: "$USER"
+  gather_facts: no
+  become: yes
+  become_user: root
+
+  tasks:
+  # Rolle init-kubernetes
+  - name: check if kubeadm is startetd
+    shell: netstat -np | grep 6443
+    register: kube_init
+    ignore_errors: true
+
+  - name: Initialize the Kubernetes cluster using kubeadm
+    command: kubeadm init --apiserver-advertise-address={{ ansible_facts.eth1.ipv4.address }} --apiserver-cert-extra-sans={{ ansible_facts.eth1.ipv4.address }}  --node-name={{ ansible_hostname }} --pod-network-cidr={{ pod_network }}
+    when: kube_init.rc !=0
+  
+  # Rolle config-k8-users
+  - name: create k8 home dir
+    file:
+      path: /home/vagrant/.kube
+      state: directory
+      owner: vagrant
+      group: vagrant  
+    
+  - name: Copy files to home dir
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: /home/vagrant/.kube/config
+      owner: vagrant
+      group: vagrant 
+      remote_src: yes
+
+# **************************************
+- name: Play03 - Install network 
+  hosts: bootstrap
+  remote_user: "$USER"
+  gather_facts: no
+  become: false
+
+  tasks:
+  # Rolle add-calico
+  - name: check if kubeadm is startetd
+    shell: kubectl get pods --namespace kube-system | grep calico
+    register: calico_present
+    ignore_errors: true
+
+
+  - name: Install calico pod network
+    become: false
+    command: kubectl create -f https://docs.projectcalico.org/v3.8/getting-started/kubernetes/installation/hosted/calico.yaml
+    when: calico_present.rc !=0  
+  
+# *********************************************
+- name: Play04 - Create join token
+  hosts: bootstrap
+  vars_files:
+    group_vars/all
+  remote_user: "$USER"
+  gather_facts: yes
+  become: yes
+  become_user: vagrant
+
+  tasks:
+  # Rolle create-join-token
+  - name: check if token is created
+    shell: kubectl get namespaces
+    register: CREATE_TOKEN
+    ignore_errors: true
+
+
+  - name: Generate join command
+    command: kubeadm token create --print-join-command
+    register: JOIN_TOKEN
+    when: CREATE_TOKEN.rc !=1
+  
+  # - set_fact: join_token="{{ join_command.stdout }}"
+      
+  # - debug: var=join_command
+  - debug: msg="{{ JOIN_TOKEN.stdout }}"
+
+  - name: Register dummy host with variable
+    add_host:
+      name: "DUMMY_HOST"
+      JOIN_TOKEN_NEW: "{{ JOIN_TOKEN.stdout }}"
+
+- name: Play05 - Deploy join token
+  hosts: masters
+  vars_files:
+    group_vars/all
+  remote_user: "$USER"
+  gather_facts: no 
+  become: yes
+  become_user: root
+
+  tasks:
+
+  
+  # Rolle add-join_token
+ # - debug: var=join_token
+ # - debug: var=join_command.stdout
+
+  
+  - name: add nodes to cluster
+    shell: eval {{ hostvars['DUMMY_HOST']['JOIN_TOKEN_NEW'] }}
+    register: PLAY05_RESULTS
+
+  - debug: msg="{{ PLAY05_RESULTS.stdout }}"
+
+
+  # Rolle confgig-k8-users
+  # - name: create k8 home dir
+  #   file:
+  #     path: /home/vagrant/.kube
+  #     state: directory
+  #     owner: vagrant
+  #     group: vagrant  
+    
+  # - name: Copy files to home dir
+  #   copy:
+  #     src: /etc/kubernetes/admin.conf
+  #     dest: /home/vagrant/.kube/config
+  #     owner: vagrant
+  #     group: vagrant 
+  #     remote_src: yes

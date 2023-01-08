@@ -1,6 +1,6 @@
 ---
 
-- name: Install dependencies
+- name: Restart Services
   block:
 
 # Restart services

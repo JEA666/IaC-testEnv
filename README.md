@@ -1,7 +1,7 @@
 # IaC-testEnv
 
-Local test environment with KVM, Libvirt, Ansible, Terraform and Rancher
-
+## Base environment.
+Local test environment with KVM, Libvirt, Ansible, and Terraform.  
 ## Step 1
 
 Install Ansible and KVM
@@ -24,15 +24,6 @@ Reboot PC
 
 ## Step 4
 
-DOESN'T WORK WITH ROOTLESS DOCKER
-
-Rancher command center!
-
-    docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged --name=rancher rancher/rancher:latest
-    docker logs rancher 2>&1 | grep "Bootstrap Password:"
-
-## Step 5
-
 Run terraform
 
 cd to terraform directory
@@ -40,18 +31,7 @@ cd to terraform directory
     terraform init
     terraform plan
     terraform apply
-   
-## Step 6
 
-Connect VM to rancher
+[Test environment with Rancher](./docs/Rancher.md)
 
-    # Find VM ip
-    virsh net-dhcp-leases default
-
-ssh username and password is ubuntu
-
-## Step 7
-
-To destroy your environment
-
-    terraform destroy
+[Test environment with Kubeadm](./docs/Kubeadm.md) - TODO

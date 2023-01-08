@@ -1,6 +1,6 @@
 ---
 
-- name: Install dependencies
+- name: Install Dependencies
   block:
 
 # Docker and friends
