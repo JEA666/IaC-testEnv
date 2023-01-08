@@ -1,6 +1,6 @@
 # IaC-testEnv
 
-Local test environment for KVM, Libvirt, Ansible, Terraform and Rancher
+Local test environment with KVM, Libvirt, Ansible, Terraform and Rancher
 
 ## Step 1
 
