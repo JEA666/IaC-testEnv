@@ -70,7 +70,7 @@
         src:   ../template/qemu.conf.j2
         dest:  /etc/libvirt/qemu.conf
         owner: root
-        group: root
+        group: root 
 
 # Terraform
     - name: Install Terraform, snap --classic
@@ -80,17 +80,6 @@
       vars:
         packages:
         - terraform
-
-# Restart services
-    - name: Restart docker
-      service:
-        name: docker
-        state: restarted
-
-    - name: Restart libvirtd
-      service:
-        name: libvirtd  
-        state: restarted
 
   become: True
   become_user: root

@@ -5,8 +5,11 @@
 
 security_driver = [ "none" ]
 
-user = "root"
-group = "root"
+#user = "root"
+#group = "root"
+
+user  = "{{ lookup('pipe', 'id -u') }}"
+group = "{{ lookup('pipe', 'id -g') }}"
 
 swtpm_user = "swtpm"
 swtpm_group = "swtpm"
