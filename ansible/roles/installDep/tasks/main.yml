@@ -38,12 +38,13 @@
         - docker-ce-cli 
         - containerd.io
 
-    - name: Jinja2 template for docker-daemon
-      template:
-        src:   ../template/daemon.json.j2
-        dest:  /etc/docker/daemon.json
-        owner: root
-        group: root
+#  Makse to many problems with the os... need to rethink this part.
+#    - name: Jinja2 template for docker-daemon
+#      template:
+#        src:   ../template/daemon.json.j2
+#        dest:  /etc/docker/daemon.json
+#        owner: root
+#        group: root
 
 # KVM hypervisor and friends
     - name: Install KVM/Qemu and Libvirt
